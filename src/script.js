@@ -39,19 +39,19 @@ const scene = new THREE.Scene();
 /**
  * Textures
  */
-const bakedRoomTexture = textureLoader.load("room-baked.jpg");
+const bakedRoomTexture = textureLoader.load("/textures/room-baked.jpg");
 bakedRoomTexture.flipY = false;
 bakedRoomTexture.colorSpace = THREE.SRGBColorSpace;
 bakedRoomTexture.magFilter = THREE.NearestFilter;
 bakedRoomTexture.minFilter = THREE.NearestFilter;
 
-const bakedBooksTexture = textureLoader.load("books-baked-1.jpg");
+const bakedBooksTexture = textureLoader.load("/textures/books-baked-1.jpg");
 bakedBooksTexture.flipY = false;
 bakedBooksTexture.colorSpace = THREE.SRGBColorSpace;
 bakedRoomTexture.magFilter = THREE.NearestFilter;
 bakedRoomTexture.minFilter = THREE.NearestFilter;
 
-const bakedBooks2Texture = textureLoader.load("books-baked-2.jpg");
+const bakedBooks2Texture = textureLoader.load("/textures/books-baked-2.jpg");
 bakedBooks2Texture.flipY = false;
 bakedBooks2Texture.colorSpace = THREE.SRGBColorSpace;
 bakedBooks2Texture.magFilter = THREE.NearestFilter;
@@ -79,7 +79,7 @@ const bakedBooks2Material = new THREE.MeshBasicMaterial({
 let mixer = null;
 
 let paintings = [];
-gltfLoader.load("room.glb", (gltf) => {
+gltfLoader.load("/models/room.glb", (gltf) => {
   gltf.scene.traverse((child) => {
     child.material = bakedRoomMaterial;
   });
@@ -91,14 +91,14 @@ gltfLoader.load("room.glb", (gltf) => {
   outlinePass.selectedObjects = paintings;
 });
 
-gltfLoader.load("books-1.glb", (gltf) => {
+gltfLoader.load("/models/books-1.glb", (gltf) => {
   gltf.scene.traverse((child) => {
     child.material = bakedBooksMaterial;
   });
   scene.add(gltf.scene);
 });
 
-gltfLoader.load("books-2.glb", (gltf) => {
+gltfLoader.load("/models/books-2.glb", (gltf) => {
   gltf.scene.traverse((child) => {
     child.material = bakedBooks2Material;
   });
@@ -187,7 +187,7 @@ let outlinePass = new OutlinePass(
   scene,
   camera
 );
-textureLoader.load("tri_pattern.jpg", function (texture) {
+textureLoader.load("/textures/tri_pattern.jpg", function (texture) {
   outlinePass.patternTexture = texture;
 });
 outlinePass.edgeStrength = 2;

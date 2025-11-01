@@ -92,7 +92,7 @@ img {
 
 .painting-blurb.active {
   opacity: 1;
-  z-index: 10;
+  z-index: 5;
 }
 
 .painting-description {
@@ -106,20 +106,6 @@ img {
 
 .painting-date {
   font-style: italic;
-}
-
-@media (min-width: 768px) {
-  .painting-blurb {
-    padding: 2rem;
-    flex-direction: row;
-    gap: 1.5rem;
-    max-width: 64rem;
-    max-height: 32rem;
-  }
-
-  .painting-description {
-    min-width: 16rem;
-  }
 }
 
 .close-btn {
@@ -137,4 +123,73 @@ img {
 
 .close-btn:hover {
   opacity: 0.5;
+}
+
+.mute-btn {
+  position: fixed;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  background: none;
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s ease;
+  z-index: 10;
+}
+
+.mute-btn:hover {
+  opacity: 0.5;
+}
+
+.mute-btn[data-muted="false"] .volume-up {
+  display: block;
+}
+
+.mute-btn[data-muted="false"] .volume-muted {
+  display: none;
+}
+
+.mute-btn[data-muted="true"] .volume-up {
+  display: none;
+}
+
+.mute-btn[data-muted="true"] .volume-muted {
+  display: block;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+@media (min-width: 768px) {
+  .painting-blurb {
+    padding: 2rem;
+    flex-direction: row;
+    gap: 1.5rem;
+    max-width: 64rem;
+    max-height: 32rem;
+  }
+
+  .painting-description {
+    min-width: 16rem;
+  }
+
+  .mute-btn {
+    top: 1rem;
+    right: 1rem;
+    width: 2rem;
+    height: 2rem;
+  }
 }

@@ -4,10 +4,96 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>cozy room 📚</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
     <canvas class="webgl"></canvas>
+
+    <article
+      class="painting-blurb"
+      data-painting-id="Painting-Isle-of-the-Dead"
+    >
+      <button class="close-btn" aria-label="Close">&times;</button>
+      <div class="painting-description">
+        <h2 class="painting-title">Isle of the Dead</h2>
+        <p class="painting-artist">Arnold Böcklin</p>
+        <span class="painting-date">1883</span>
+      </div>
+      <img
+        class="painting-image"
+        src="Isle-of-the-Dead.jpg"
+        alt="Isle of the Dead by Arnold Böcklin"
+      />
+    </article>
+
+    <article class="painting-blurb" data-painting-id="Painting-Witches-Sabbath">
+      <button class="close-btn" aria-label="Close">&times;</button>
+      <div class="painting-description">
+        <h2 class="painting-title">Witches' Sabbath</h2>
+        <p class="painting-artist">Francisco Goya</p>
+        <span class="painting-date">1798</span>
+      </div>
+      <img
+        class="painting-image"
+        src="Witches-Sabbath.jpg"
+        alt="Witches' Sabbath by Francisco Goya"
+      />
+    </article>
+
+    <article class="painting-blurb" data-painting-id="Painting-Dancers">
+      <button class="close-btn" aria-label="Close">&times;</button>
+      <div class="painting-description">
+        <h2 class="painting-title">Dancers</h2>
+        <p class="painting-artist">Franz von Stuck</p>
+        <span class="painting-date">1896</span>
+      </div>
+      <img
+        class="painting-image"
+        src="Dancers.jpg"
+        alt="Dancers by Franz von Stuck"
+      />
+    </article>
+
+    <article
+      class="painting-blurb"
+      data-painting-id="Painting-Temple-of-the-Word"
+    >
+      <button class="close-btn" aria-label="Close">&times;</button>
+      <div class="painting-description">
+        <h2 class="painting-title">Temple of the Word</h2>
+        <p class="painting-artist">Leonora Carrington</p>
+        <span class="painting-date">1954</span>
+      </div>
+      <img
+        class="painting-image"
+        src="Temple-of-the-Word.png"
+        alt="Temple of the Word by Leonora Carrington"
+      />
+    </article>
+
+    <article
+      class="painting-blurb"
+      data-painting-id="Painting-The-Message-of-the-Forest"
+    >
+      <button class="close-btn" aria-label="Close">&times;</button>
+      <div class="painting-description">
+        <h2 class="painting-title">The Message of the Forest</h2>
+        <p class="painting-artist">Toyen (Marie Čermínová)</p>
+        <span class="painting-date">1936</span>
+      </div>
+      <img
+        class="painting-image"
+        src="The-Message-of-the-Forest.jpg"
+        alt="The Message of the Forest by Toyen"
+      />
+    </article>
+
     <script type="module" src="./script.js"></script>
   </body>
 </html>

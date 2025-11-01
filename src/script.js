@@ -2,7 +2,13 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
-import GUI from "lil-gui";
+// import GUI from "lil-gui";
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
+import { OutlinePass } from "three/addons/postprocessing/OutlinePass.js";
+import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
+import { FXAAShader } from "three/addons/shaders/FXAAShader.js";
 
 /**
  * Loaders
@@ -72,11 +78,17 @@ const bakedBooks2Material = new THREE.MeshBasicMaterial({
  */
 let mixer = null;
 
+let paintings = [];
 gltfLoader.load("room.glb", (gltf) => {
   gltf.scene.traverse((child) => {
     child.material = bakedRoomMaterial;
   });
   scene.add(gltf.scene);
+
+  paintings = gltf.scene.children.filter((child) =>
+    child.name.startsWith("Painting")
+  );
+  outlinePass.selectedObjects = paintings;
 });
 
 gltfLoader.load("books-1.glb", (gltf) => {
@@ -113,6 +125,14 @@ window.addEventListener("resize", () => {
   // Update renderer
   renderer.setSize(sizes.width, sizes.height);
   renderer.setPixelRatio(window.devicePixelRatio);
+
+  // Update composer
+  composer.setSize(sizes.width, sizes.height);
+
+  effectFXAA.uniforms["resolution"].value.set(
+    1 / window.innerWidth,
+    1 / window.innerHeight
+  );
 });
 
 /**
@@ -150,6 +170,133 @@ renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(window.devicePixelRatio);
 
 /**
+ * Interact with paintings
+ */
+let selectedObjects = [];
+
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+
+let composer = new EffectComposer(renderer);
+
+let renderPass = new RenderPass(scene, camera);
+composer.addPass(renderPass);
+
+let outlinePass = new OutlinePass(
+  new THREE.Vector2(window.innerWidth, window.innerHeight),
+  scene,
+  camera
+);
+textureLoader.load("tri_pattern.jpg", function (texture) {
+  outlinePass.patternTexture = texture;
+});
+outlinePass.edgeStrength = 2;
+outlinePass.edgeGlow = 1;
+outlinePass.edgeThickness = 1;
+outlinePass.pulsePeriod = 5;
+outlinePass.visibleEdgeColor.set("#ffdc73");
+outlinePass.hiddenEdgeColor.set("#9A6637");
+
+composer.addPass(outlinePass);
+
+let outputPass = new OutputPass();
+composer.addPass(outputPass);
+
+let effectFXAA = new ShaderPass(FXAAShader);
+effectFXAA.uniforms["resolution"].value.set(
+  1 / window.innerWidth,
+  1 / window.innerHeight
+);
+composer.addPass(effectFXAA);
+
+renderer.domElement.addEventListener("pointermove", onPointerMove);
+
+function onPointerMove(event) {
+  if (event.isPrimary === false) return;
+
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+  checkIntersection();
+}
+
+function addSelectedObject(object) {
+  selectedObjects = [];
+  selectedObjects.push(object);
+}
+
+function checkIntersection() {
+  raycaster.setFromCamera(mouse, camera);
+
+  const intersects = raycaster.intersectObject(scene, true);
+
+  if (intersects.length > 0) {
+    const selectedObject = intersects[0].object;
+    if (selectedObject.name.startsWith("Painting")) {
+      addSelectedObject(selectedObject);
+      outlinePass.selectedObjects = selectedObjects;
+      renderer.domElement.style.cursor = "pointer";
+    } else {
+      outlinePass.selectedObjects = paintings;
+      renderer.domElement.style.cursor = "default";
+    }
+  } else {
+    outlinePass.selectedObjects = paintings;
+    renderer.domElement.style.cursor = "default";
+  }
+}
+
+renderer.domElement.addEventListener("pointerdown", onPointerClick);
+
+function onPointerClick(event) {
+  if (event.isPrimary === false) return;
+
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObject(scene, true);
+
+  if (intersects.length > 0) {
+    const clickedObject = intersects[0].object;
+    if (clickedObject.name.startsWith("Painting")) {
+      handlePaintingClick(clickedObject);
+    }
+  }
+}
+
+function handlePaintingClick(painting) {
+  renderer.domElement.style.cursor = "default";
+  closeBlurb();
+  const paintingId = painting.name;
+  const blurb = document.querySelector(`[data-painting-id="${paintingId}"]`);
+  if (blurb) {
+    blurb.classList.add("active");
+  }
+}
+
+function closeBlurb() {
+  document.querySelectorAll(".painting-blurb").forEach((blurb) => {
+    blurb.classList.remove("active");
+  });
+}
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    closeBlurb();
+  }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".close-btn").forEach((btn) => {
+    btn.addEventListener("click", (event) => {
+      event.stopPropagation();
+      closeBlurb();
+    });
+  });
+});
+
+/**
  * Animate
  */
 const clock = new THREE.Clock();
@@ -168,7 +315,7 @@ const tick = () => {
   controls.update();
 
   // Render
-  renderer.render(scene, camera);
+  composer.render();
 
   // Call tick again on the next frame
   window.requestAnimationFrame(tick);

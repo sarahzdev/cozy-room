@@ -99,7 +99,7 @@
       id="mute-btn"
       class="mute-btn"
       aria-label="Mute/Unmute"
-      data-muted="false"
+      data-muted="true"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -156,41 +156,29 @@
             playlist: videoId,
             playsinline: 1,
             controls: 0,
+            mute: 1,
           },
           events: {
             onReady: onPlayerReady,
-            onStateChange: onPlayerStateChange,
           },
         });
       }
 
       function onPlayerReady(event) {
-        event.target.setVolume(15);
+        player.setVolume(15);
         event.target.playVideo();
 
         const muteBtn = document.getElementById("mute-btn");
-
-        updateMuteButton();
-
+        muteBtn.style.display = "flex";
         muteBtn.addEventListener("click", () => {
           if (player.isMuted()) {
             player.unMute();
+            muteBtn.dataset.muted = "false";
           } else {
             player.mute();
+            muteBtn.dataset.muted = "true";
           }
-          updateMuteButton();
         });
-      }
-
-      function onPlayerStateChange(event) {
-        updateMuteButton();
-      }
-
-      function updateMuteButton() {
-        const muteBtn = document.getElementById("mute-btn");
-        if (muteBtn && player) {
-          muteBtn.dataset.muted = player.isMuted() ? "true" : "false";
-        }
       }
     </script>
 

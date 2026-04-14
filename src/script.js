@@ -288,12 +288,30 @@ document.addEventListener("keydown", (event) => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
+  const welcomeModal = document.getElementById("welcome-modal");
+  const dismissWelcome = () => {
+    if (welcomeModal && welcomeModal.classList.contains("active")) {
+      if (typeof window.startMusic === "function") {
+        window.startMusic();
+      }
+    }
+    closeBlurb();
+  };
+
   document.querySelectorAll(".close-btn").forEach((btn) => {
     btn.addEventListener("click", (event) => {
       event.stopPropagation();
-      closeBlurb();
+      dismissWelcome();
     });
   });
+
+  const enterBtn = document.querySelector(".enter-btn");
+  if (enterBtn) {
+    enterBtn.addEventListener("click", (event) => {
+      event.stopPropagation();
+      dismissWelcome();
+    });
+  }
 });
 
 /**

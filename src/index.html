@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -15,6 +15,19 @@
   </head>
   <body>
     <canvas class="webgl"></canvas>
+
+    <article id="welcome-modal" class="painting-blurb welcome-modal active">
+      <button class="close-btn" aria-label="Close">&times;</button>
+      <div class="welcome-content">
+        <h2 class="welcome-title">Welcome</h2>
+        <p class="welcome-text">
+          This is my dream reading room. I modeled every piece from scratch in
+          Blender, then brought this scene to life in Three.js. Make yourself at
+          home.
+        </p>
+        <button class="enter-btn" type="button">Enter</button>
+      </div>
+    </article>
 
     <article
       class="painting-blurb"
@@ -133,6 +146,17 @@
       </svg>
     </button>
 
+    <footer class="site-footer">
+      <span class="footer-title">Cozy Corner #1</span>
+      <a
+        class="footer-link"
+        href="https://lilcheekycat.com"
+        target="_blank"
+        rel="noopener noreferrer"
+        >See more</a
+      >
+    </footer>
+
     <div id="player" class="sr-only"></div>
 
     <script>
@@ -165,11 +189,19 @@
       }
 
       function onPlayerReady(event) {
-        player.setVolume(15);
+        player.setVolume(8);
         event.target.playVideo();
 
         const muteBtn = document.getElementById("mute-btn");
         muteBtn.style.display = "flex";
+
+        window.startMusic = () => {
+          if (!player) return;
+          player.unMute();
+          player.playVideo();
+          muteBtn.dataset.muted = "false";
+        };
+
         muteBtn.addEventListener("click", () => {
           if (player.isMuted()) {
             player.unMute();
